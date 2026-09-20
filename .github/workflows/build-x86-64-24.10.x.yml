@@ -155,10 +155,16 @@ jobs:
             echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
           fi
 
-      - name: Upload ImmortWrt as release assets
+      - name: Generate Release Tag
+        id: release_tag
+        run: |
+          echo "tag=Autobuild-x86-64-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload ImmortalWrt as release assets
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: Autobuild-x86-64
+          tag_name: ${{ steps.release_tag.outputs.tag }}
+          name: Autobuild-x86-64-${{ github.run_number }}
           body_path: ${{ github.workspace }}/router-info.md
           files: |
             ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
